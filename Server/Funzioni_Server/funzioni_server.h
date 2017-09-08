@@ -31,6 +31,8 @@ int verify_client_registration(char *username, char* password);
 int do_registration(char *username, char* password);
 int login_state(int sd, char username[], Player P[], int n_players);
 int loginServer(int,char username[], char password[]);
+void convertSHA1BinaryToCharStr(const unsigned char * const hashbin, char * const hashstr);
+void Encryption_SHA256(char string[], char *pass_hash);
 void openFile(int fp[]);
 void riempiNomi(char nomi_rossi[],char nomi_verdi[]);
 void clearBuffer();

@@ -13,6 +13,7 @@
 #include <time.h>
 #include <netdb.h>
 #include <signal.h>
+#include <openssl/sha.h>
 #include "Funzioni_Server/funzioni_server.h"
 #define BACKLOG 20
 #define DIM 104

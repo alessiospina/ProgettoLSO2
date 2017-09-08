@@ -11,6 +11,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <openssl/sha.h>
 #include "funzioni_server.h"
 
 #define SIZE_RIGHE 30
@@ -58,7 +59,7 @@ int loginServer(int accsd,char username[], char password[])
 
 
 
-    printf("\nRichiesta di login da [%s] [%s] [%c]",username,password,tmpchar);
+    //printf("\nRichiesta di login da [%s] [%s] [%c]",username,password,tmpchar);
 
     if(tmpchar == 'y')
       return 1;
@@ -74,7 +75,7 @@ int loginServer(int accsd,char username[], char password[])
 int verify_client_registration(char username[], char password[])
 {
    FILE *fp;
-   char user_temp[20], pass_temp[20];
+   char user_temp[20], pass_temp[64];
 
    if((fp=fopen("Accounts.txt","r"))<0)
    {
@@ -101,7 +102,7 @@ int do_registration(char username[], char password[])
 {
     FILE *fp;
     int fd;
-    char user_temp[20], pass_temp[20],text[41];
+    char user_temp[20], pass_temp[64],text[85];
 
 
     if((fp=fopen("Accounts.txt","r"))<0)
@@ -147,10 +148,13 @@ int do_registration(char username[], char password[])
 int login_state(int sd, char username[], Player P[], int n_players)
 {
   char password[20];
+  char Hash_password[64];
 
   if(loginServer(sd,username,password))
   {
-      if(verify_client_registration(username,password))
+      Encryption_SHA256(password,Hash_password);
+
+      if(verify_client_registration(username,Hash_password))
       {
 
         if(check_username(username,P,n_players))
@@ -175,7 +179,9 @@ int login_state(int sd, char username[], Player P[], int n_players)
    }
    else
    {
-    if(do_registration(username,password))
+    Encryption_SHA256(password,Hash_password);
+
+    if(do_registration(username,Hash_password))
     {
       //printf("\nRegistrazione Effettuata!\n");
       write(sd,"Y",1);
@@ -189,11 +195,32 @@ int login_state(int sd, char username[], Player P[], int n_players)
       return 0;
     }
  }
-
-
-
-
 }
+
+ void convertSHA1BinaryToCharStr(const unsigned char * const hashbin, char * const hashstr) {
+   for(int i = 0; i<32; ++i)
+   {
+     sprintf(&hashstr[i*2], "%02X", hashbin[i]);
+   }
+   hashstr[64]=0;
+ }
+
+ void Encryption_SHA256(char string[], char *pass_hash)
+ {
+   unsigned char digest[SHA256_DIGEST_LENGTH];
+   char hash_string[64];
+   SHA256_CTX sha256;
+   SHA256_Init(&sha256);
+   SHA256_Update(&sha256, string, strlen(string));
+   SHA256_Final(digest, &sha256);
+
+   convertSHA1BinaryToCharStr(digest, hash_string);
+
+   strcpy(pass_hash,hash_string);
+ }
+
+
+
 
 int check_username(char username[] , Player P[] , int n_players)
 {
