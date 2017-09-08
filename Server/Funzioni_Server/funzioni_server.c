@@ -77,7 +77,7 @@ int verify_client_registration(char username[], char password[])
    FILE *fp;
    char user_temp[20], pass_temp[64];
 
-   if((fp=fopen("Accounts.txt","r"))<0)
+   if((fp=fopen("Log/Accounts.txt","r"))<0)
    {
      perror("Errore apertura file : Accounts.txt");
    }
@@ -102,10 +102,10 @@ int do_registration(char username[], char password[])
 {
     FILE *fp;
     int fd;
-    char user_temp[20], pass_temp[64],text[85];
+    char user_temp[20], pass_temp[64],text[100];
 
 
-    if((fp=fopen("Accounts.txt","r"))<0)
+    if((fp=fopen("Log/Accounts.txt","r"))<0)
     {
       perror("Errore apertura file : Accounts.txt");
     }
@@ -122,17 +122,16 @@ int do_registration(char username[], char password[])
 
     fclose(fp);
 
-    if((fd=open("Accounts.txt", O_WRONLY | O_APPEND ,S_IRUSR | S_IWUSR ))<0)
+    if((fd=open("Log/Accounts.txt", O_WRONLY | O_APPEND ,S_IRUSR | S_IWUSR ))<0)
     {
       perror("Errore apertura file : Accounts.txt");
     }
 
-
-    strcpy(text,"\n");
-    strcat(text,username);
-    strcat(text," ");
-    strcat(text,password);
-
+    sprintf(text,"\n%s %s", username,password);
+    //strcpy(text,"\n");
+    //strcat(text,username);
+    //strcat(text," ");
+    //strcat(text,password);
     //fprintf(stdout, "\ntext: %s", text);
 
     lseek(fd,0,SEEK_END);
@@ -366,9 +365,9 @@ void setTime(char *time_string)
 
 void removeFiles()
 {
-  remove("LoginClients.txt");
-  remove("EliminationClients.txt");
-  remove("Flag.txt");
+  remove("Log/LoginClients.txt");
+  remove("Log/EliminationClients.txt");
+  remove("Log/Flag.txt");
 }
 
 void openFile(int fp[])
@@ -379,25 +378,25 @@ void openFile(int fp[])
    int f_acc;
 
 
-   if( (fp[0]=open("LoginClients.txt",O_WRONLY | O_CREAT | O_APPEND, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH)) < 0 )
+   if( (fp[0]=open("Log/LoginClients.txt",O_WRONLY | O_CREAT | O_APPEND, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH)) < 0 )
    {
      perror("Error create or open file LoginClients.txt");
      //exit(-1);
    }
 
-   if( (fp[1]=open("EliminationClients.txt",O_WRONLY | O_CREAT | O_APPEND, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH)) < 0 )
+   if( (fp[1]=open("Log/EliminationClients.txt",O_WRONLY | O_CREAT | O_APPEND, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH)) < 0 )
    {
      perror("Error create or open file EliminationClients.txt");
   //   exit(-1);
    }
 
-   if( (fp[2]=open("Flag.txt",O_WRONLY | O_CREAT | O_APPEND, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH)) < 0 )
+   if( (fp[2]=open("Log/Flag.txt",O_WRONLY | O_CREAT | O_APPEND, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH)) < 0 )
    {
      perror("Error create or open file Objects.txt");
   //   exit(-1);
    }
 
-   if( (f_acc=open("Accounts.txt",O_WRONLY | O_CREAT | O_APPEND, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH)) < 0 )
+   if( (f_acc=open("Log/Accounts.txt",O_WRONLY | O_CREAT | O_APPEND, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH)) < 0 )
    {
      perror("Error create or open file Objects.txt");
   //   exit(-1);
