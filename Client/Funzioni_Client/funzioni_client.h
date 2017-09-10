@@ -14,6 +14,12 @@ struct Player               //da aggiungere al progetto
 };
 struct Player P[104];               //CLIENT
 
+void Logo();
+char requestName(int sd);
+int find_me(int n_players, int indice);
+int check_my_punteggio(int sd , int io);
+int getch();
+void getpasshide(char *password);
 int loginClient(int,char username[]);
 void StampaObjects(char username[],char nome_p,char nome_o,int X,int Y);
 void receiveObjectDestroyed(int sd, char team);

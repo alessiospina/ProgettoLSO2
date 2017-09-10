@@ -11,6 +11,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <netdb.h>
+#include <termios.h>
 #include <signal.h>
 #include <assert.h>
 #include "Funzioni_Client/funzioni_client.h"

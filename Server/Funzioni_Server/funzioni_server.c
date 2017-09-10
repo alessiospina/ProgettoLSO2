@@ -218,6 +218,8 @@ int login_state(int sd, char username[], Player P[], int n_players)
    strcpy(pass_hash,hash_string);
  }
 
+ 
+
 
 
 
@@ -392,13 +394,13 @@ void openFile(int fp[])
 
    if( (fp[2]=open("Log/Flag.txt",O_WRONLY | O_CREAT | O_APPEND, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH)) < 0 )
    {
-     perror("Error create or open file Objects.txt");
+     perror("Error create or open file Flag.txt");
   //   exit(-1);
    }
 
    if( (f_acc=open("Log/Accounts.txt",O_WRONLY | O_CREAT | O_APPEND, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH)) < 0 )
    {
-     perror("Error create or open file Objects.txt");
+     perror("Error create or open file Accounts.txt");
   //   exit(-1);
    }
 

@@ -10,6 +10,7 @@
 #include <sys/un.h> // Connection
 #include <stdio.h>
 #include <stdlib.h>
+#include <termios.h>
 #include "funzioni_client.h"
 
 char ARMA = 124;                 // '|'
@@ -61,6 +62,36 @@ void Logo()
 }
 
 
+int getch() {
+    struct termios oldt, newt;
+    int ch;
+    tcgetattr(STDIN_FILENO, &oldt);
+    newt = oldt;
+    newt.c_lflag &= ~(ICANON | ECHO);
+    tcsetattr(STDIN_FILENO, TCSANOW, &newt);
+    ch = getchar();
+    tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
+    return ch;
+}
+
+void getpasshide(char *password)
+{
+  char str[20],c=' ';
+  int i=0;
+  //printf("\n Inserisci la password [max Lunghezza 20] : ");
+  while (i<=9){
+      str[i]=getch();
+      c=str[i];
+      if(c=='\n') break;
+      else printf("*");
+      i++;
+  }
+  str[i]='\0';
+
+  strcpy(password,str);
+
+}
+
 int loginClient(int sd,char username[])
 {
       char password[20];
@@ -105,11 +136,12 @@ int loginClient(int sd,char username[])
     do
     {
       printf("\n[PASSWORD(max 9 caratteri)]: ");
-      fgets(password,20,stdin);
-      password[strlen(password)-1]='\0';
+      getpasshide(password);
+      //fgets(password,20,stdin);
+      //password[strlen(password)-1]='\0';
     }while((strlen(password)>9  &&  fprintf(stdout, "Lunghezza non valida!")));
 
-    fprintf(stdout, "Inseriti Username=[%s] Password=[%s]", username, password);
+    //fprintf(stdout, "Inseriti Username=[%s] Password=[%s]", username, password);
 
 
       if( (write(sd,password, strlen(password))) < 0 )
@@ -124,7 +156,7 @@ int loginClient(int sd,char username[])
           perror("Error read risposta_Server");
         }
 
-       fprintf(stdout, "\nrisposta_Server=[%c]", risposta_Server );
+      // fprintf(stdout, "\nrisposta_Server=[%c]", risposta_Server );
 
 
       if(risposta_Server == 'F')
@@ -774,7 +806,7 @@ void receivePlayers(int sd , char **Mappa, int *n_players)
 
         *n_players=n_players_c - '0';
 
-         fprintf(stdout, "\nRicevuto n_players = %d\n", *n_players);
+         //fprintf(stdout, "\nRicevuto n_players = %d\n", *n_players);
 
          for(i=0;i<*n_players; i++)
          {
@@ -806,13 +838,13 @@ void receivePlayers(int sd , char **Mappa, int *n_players)
             punteggio=atoi(punteggio_string);
 
           //  puts("Prima addPlayer");
-        fprintf(stdout, "\nRicevuto username=[%s] nome=[%c] | squadra=[%c] | Punteggio=[%d] | X=[%d] Y=[%d] | indice =[%d]",username, temp[0] , temp[1] ,punteggio, X , Y, indice);
+        //fprintf(stdout, "\nRicevuto username=[%s] nome=[%c] | squadra=[%c] | Punteggio=[%d] | X=[%d] Y=[%d] | indice =[%d]",username, temp[0] , temp[1] ,punteggio, X , Y, indice);
 
         old_X=P[i].X;
         old_Y=P[i].Y;
         Mappa[old_X][old_Y]=' ';
 
-        fprintf(stdout, "\nP[%d] old_X=%d , old_Y=%d",i,old_X,old_Y);
+      //  fprintf(stdout, "\nP[%d] old_X=%d , old_Y=%d",i,old_X,old_Y);
 
         addPlayer(X,Y,temp[0],username,temp[1],punteggio,indice,i);
 
