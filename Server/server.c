@@ -35,7 +35,8 @@ int fp[3];
 
 
 
-//gcc server.c Funzioni_Server/funzioni_server.c -o server -lpthread && ./server
+//gcc server.c -I/path/to/openssl/ Funzioni_Server/funzioni_server.c  -o server -lpthread -lssl -lcrypto
+//gcc server.c Funzioni_Server/funzioni_server.c  -o server -lpthread -lssl -lcrypto
 void *connection_handler(void *);
 void *recv_movement_client(void *);
 void *timing_thread();
@@ -152,6 +153,8 @@ do{
 
 
 }while(1);
+
+close(sd);
 
 
   return 0;
